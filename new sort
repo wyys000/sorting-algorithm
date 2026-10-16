@@ -5,6 +5,8 @@
 #include <chrono>
 #include <ctime>
 #include <climits>
+#include <cfloat>
+#include <iomanip>
 using namespace std;
 
 typedef void (*SortFunction)(int[], int, long long&, long long&);
@@ -140,19 +142,49 @@ void quickSortRandom(int arr[], int size, long long& comparison, long long& swap
     quickSortRandom(arr, p, comparison, swaps);
     quickSortRandom(arr + p + 1, size - p - 1, comparison, swaps);
 }
+
+void printFrequencyLong(long long value[], int runs, long long minvalue, long long maxvalue){
+    const int range = 10;
+    double rangeSize = double(maxvalue - minvalue) / range;
+    
+    for(int i=0; i<range; i++){
+        double lower = minvalue + i *rangeSize;
+        double upper = minvalue + (i+1) * rangeSize;
+        int count = 0;
+    
+    for(int j = 0; j < runs; j++){
+        
+        if(i == range -1){
+            if(value[j] >= lower && value[j] <= upper)
+                count++;
+        }
+        else{
+            if(value[j] >= lower && value[j] < upper)
+                count++;
+            }
+        }
+        cout << "[" << lower << ", " << upper << "]: " << endl;
+    }
+}
+
+
 void SortingArray(int ori[], int size, SortFunction sortFn, int iteration){
     
     double TotalTime =0;
     long long TotalComparison = 0;
     long long TotalSwaps = 0;
     
-    double mintime = 100;
+    double mintime = DBL_MAX;
     double maxtime = 0;
     
     long long minComparison = LLONG_MAX;
     long long maxComparison = 0;
     long long minSwaps = LLONG_MAX;
     long long maxSwaps = 0;
+    
+    double Ftime[iteration];
+    long long Fcomparison[iteration];
+    long long Fswaps[iteration];
     
     int* arr = new int[size];
     
@@ -168,12 +200,14 @@ void SortingArray(int ori[], int size, SortFunction sortFn, int iteration){
     long long swaps = 0;
     
     clock_t start = clock();
-    
     sortFn(arr, size, comparison, swaps);
-    
     clock_t end = clock();
     
     double times = double(end - start) *1000 / CLOCKS_PER_SEC;
+    
+    Ftime[runs] = times;
+    Fcomparison[runs] = comparison;
+    Fswaps[runs] = swaps;
     
     TotalTime += times;
     TotalComparison += comparison;
@@ -190,14 +224,14 @@ void SortingArray(int ori[], int size, SortFunction sortFn, int iteration){
     }
     delete[] arr;
     
-    cout << "average time: " << TotalTime / 1000.0 << endl;
-    cout << "average comparison: " << TotalComparison / 1000.0 << endl;
-    cout << "average swaps: " << TotalSwaps / 1000.0 << endl;
+    cout << "average time: " << TotalTime / iteration << "ns" << endl;
+    cout << "average comparison: " << TotalComparison / iteration << endl;
+    cout << "average swaps: " << TotalSwaps / iteration << endl;
     
-    cout << "min time: " << mintime<< endl;
-    cout << "max time: " << maxtime << endl;
+    cout << "min time: " << mintime << "ns" << endl;
+    cout << "max time: " << maxtime << "ns"<< endl;
     cout << "min comparison: " << minComparison<< endl;
-    cout << "max comparison" << maxComparison<< endl;
+    cout << "max comparison: " << maxComparison<< endl;
     cout << "min swap: " << minSwaps<< endl;
     cout << "max swap: " << maxSwaps<< endl;
 }
@@ -205,32 +239,34 @@ void SortingArray(int ori[], int size, SortFunction sortFn, int iteration){
 
 int main(){
     
-    int oriArray[16];
+    int oriArray[10000];
     int size = sizeof(oriArray) / sizeof(oriArray[0]);
     srand(721);
     for (int i=0; i<size; i++){
-        oriArray[i] = rand() % 1000 +1;
+        oriArray[i] = rand() % 10000 +1;
     }
-    
+    /*
     int sortedArray[100000];
     for(int j = 0; j< 100000; j++){
         sortedArray[j] = j+1;
+        
     }
-    int arraysize = 16;
+    */
+    int iterationtimes = 1000;
     cout << "insertion sort" << endl;
-    SortingArray(oriArray, size, insertionSort, arraysize);
+    SortingArray(oriArray, size, insertionSort, iterationtimes);
     cout << endl;
     cout << "heap  sort" << endl;
-    SortingArray(oriArray, size, heapSort, arraysize);
+    SortingArray(oriArray, size, heapSort, iterationtimes);
     cout << endl;
     cout << "merge sort" << endl;
-    SortingArray(oriArray, size, mergeSort, arraysize);
+    SortingArray(oriArray, size, mergeSort, iterationtimes);
     cout << endl;
     cout << "quick sort basic" << endl;
-    SortingArray(oriArray, size, quickSortBasic, arraysize);
+    SortingArray(oriArray, size, quickSortBasic, iterationtimes);
     cout << endl;
-    //cout << "quick sort random" << endl;
-    //SortingArray(oriArray, size, quickSortRandom, 1000);
+    cout << "quick sort random" << endl;
+    SortingArray(oriArray, size, quickSortRandom, iterationtimes);
     cout << endl;
     
     
