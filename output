@@ -102,3 +102,30 @@ max comparison2339963
 min swap: 1042206
 max swap: 1452414
 
+
+running 1 time for sorted array of 100,000
+
+heap  sort
+average time: 0.039247
+average comparison: 3112.52
+average swaps: 1650.85
+min time: 39.247
+max time: 39.247
+min comparison: 3112517
+max comparison3112517
+min swap: 1650854
+max swap: 1650854
+
+
+quick sort basic
+average time: 69.9012
+average comparison: 4.99995e+06
+average swaps: 5.00005e+06
+min time: 100
+max time: 69901.2
+min comparison: 4999950000
+max comparison4999950000
+min swap: 5000049999
+max swap: 5000049999
+
+
