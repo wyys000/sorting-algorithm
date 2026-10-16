@@ -1,0 +1,32 @@
+void printFrequencyDouble(double value[], int runs,
+                          double minvalue, double maxvalue){
+
+    const int range = 10;
+
+    double rangeSize =
+        (maxvalue - minvalue) / range;
+
+    for(int i = 0; i < range; i++){
+
+        double lower = minvalue + i * rangeSize;
+        double upper = minvalue + (i + 1) * rangeSize;
+
+        int count = 0;
+
+        for(int j = 0; j < runs; j++){
+
+            if(i == range - 1){
+                if(value[j] >= lower && value[j] <= upper)
+                    count++;
+            }
+            else{
+                if(value[j] >= lower && value[j] < upper)
+                    count++;
+            }
+        }
+
+        cout << fixed << setprecision(2);
+        cout << "[" << lower << ", " << upper << "]: "
+             << count << endl;
+    }
+}
