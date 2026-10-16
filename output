@@ -1,58 +1,61 @@
 array size 10,000
+
 insertion sort
-average time: 74.5768
-average comparison: 2.47609e+07
-average swaps: 2.47509e+07
-min time: 70.068
-max time: 107.785
-min comparison: 24760935
-max comparison24760935
-min swap: 24750945
-max swap: 24750945
+average time: 93.8009ns
+average comparison: 24957838
+average swaps: 24947853
+min time: 84.872ns
+max time: 150.623ns
+min comparison: 24957838
+max comparison: 24957838
+min swap: 24947853
+max swap: 24947853
 
 heap  sort
-average time: 2.91322
-average comparison: 235344
-average swaps: 124158
-min time: 2.748
-max time: 4.684
-min comparison: 235344
-max comparison235344
-min swap: 124158
-max swap: 124158
+average time: 3.50812ns
+average comparison: 235475
+average swaps: 124264
+min time: 3.024ns
+max time: 5.319ns
+min comparison: 235475
+max comparison: 235475
+min swap: 124264
+max swap: 124264
 
 merge sort
-average time: 1.71788
-average comparison: 120358
+average time: 2.18719ns
+average comparison: 120340
 average swaps: 133616
-min time: 1.579
-max time: 2.453
-min comparison: 120358
-max comparison120358
+min time: 1.8ns
+max time: 3.367ns
+min comparison: 120340
+max comparison: 120340
 min swap: 133616
 max swap: 133616
 
 quick sort basic
-average time: 1.90892
-average comparison: 165542
-average swaps: 88891
-min time: 1.83
-max time: 2.428
-min comparison: 165542
-max comparison165542
-min swap: 88891
-max swap: 88891
+average time: 2.30443ns
+average comparison: 151711
+average swaps: 82761
+min time: 1.987ns
+max time: 3.24ns
+min comparison: 151711
+max comparison: 151711
+min swap: 82761
+max swap: 82761
 
 quick sort random
-average time: 2.00028
-average comparison: 155498
-average swaps: 91157.2
-min time: 1.815
-max time: 2.836
-min comparison: 142158
-max comparison191146
-min swap: 78925
-max swap: 118370
+average time: 2.55312ns
+average comparison: 155875
+average swaps: 94096
+min time: 2.188ns
+max time: 3.643ns
+min comparison: 143209
+max comparison: 185160
+min swap: 80562
+max swap: 120174
+
+
 
 array size 100,000
 insertion sort
