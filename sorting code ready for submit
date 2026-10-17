@@ -1,0 +1,323 @@
+
+#include <iostream> 
+#include <cstdlib>
+#include <utility>
+#include <chrono>
+#include <ctime>
+#include <climits>
+#include <cfloat>
+#include <iomanip>
+using namespace std;
+
+typedef void (*SortFunction)(int[], int, long long&, long long&);
+
+void insertionSort(int arr[], int size, long long& comparison, long long& swaps){
+    for(int i=1; i < size; i++){
+        int j = i-1;
+        int key = arr[i];
+        while(j >= 0){
+            comparison++;
+            if(arr[j] > key){
+            arr[j +1] = arr[j];
+            swaps++;
+            --j;
+            }
+            else{
+                break;
+            }
+        }
+        arr[j+1] = key;
+    }
+}
+void heapify(int arr[], int size, int i, long long& comparison, long long& swaps){
+    while(true){
+        int large = i;
+        int left = 2 * i +1;
+        int right = 2 * i +2;
+        
+        if (left < size) {
+            comparison++;
+            if (arr[left] > arr[large]) large = left;
+        }
+        if (right < size) {
+            comparison++;
+            if(arr[right] > arr[large]) large = right;
+        }
+        if (large == i) break;
+        swap(arr[i], arr[large]);
+        swaps++;
+        
+        i = large;
+    }
+}
+void heapSort(int arr[], int size, long long& comparison, long long& swaps){
+    for (int i = size / 2 - 1; i >= 0; i--) heapify(arr, size, i, comparison, swaps);
+    for (int end = size -1; end > 0; end--){
+        swap(arr[0], arr[end]);
+        swaps++;
+        heapify(arr, end, 0, comparison, swaps);
+    }
+
+}
+
+void mergeSort(int arr[], int size, long long& comparison, long long& swaps) {
+    if (size <= 1) return;                   
+
+    int mid = size / 2;
+    mergeSort(arr, mid, comparison, swaps); 
+    mergeSort(arr + mid, size - mid, comparison, swaps);        
+    
+    int* tmp = new int[size];
+    int i = 0;
+    int j = mid;
+    int k = 0;
+    
+    while (i < mid && j < size) {
+        
+        comparison++;
+        if (arr[i] <= arr[j]) {
+            tmp[k++] = arr[i++];
+        }
+        else  {
+            tmp[k++] = arr[j++];
+        }
+        swaps++;
+    }
+    while (i < mid)  {
+        tmp[k++] = arr[i++];
+        swaps++;
+    }
+    while (j < size) {
+        tmp[k++] = arr[j++];
+        swaps++;
+    }
+
+    for (k = 0; k < size; k++) arr[k] = tmp[k];
+    delete[] tmp;
+}
+
+void quickSortBasic(int arr[], int size, long long& comparison, long long& swaps) {
+    if (size <= 1) return;
+
+    int pivot = arr[size - 1];
+    int i = -1;  
+    for (int j = 0; j < size - 1; j++) {
+        comparison++;
+        if (arr[j] <= pivot) {
+            i++;
+            swap(arr[i], arr[j]);
+            swaps++;
+        }
+    }
+    swap(arr[i + 1], arr[size - 1]);         
+    swaps++;
+    int p = i + 1;
+
+    quickSortBasic(arr, p, comparison, swaps);  
+    quickSortBasic(arr + p + 1, size - p - 1, comparison, swaps); 
+}
+
+
+void quickSortRandom(int arr[], int size, long long& comparison, long long& swaps) {
+    if (size <= 1) return;
+
+    int r = rand() % size;   
+    swap(arr[r], arr[size - 1]); 
+    swaps++;
+
+    int pivot = arr[size - 1];
+    int i = -1;
+    for (int j = 0; j < size - 1; j++) {
+        comparison++;
+        if (arr[j] <= pivot) {
+            i++;
+            swap(arr[i], arr[j]);
+            swaps++;
+        }
+    }
+    swap(arr[i + 1], arr[size - 1]);
+    swaps++;
+    int p = i + 1;
+
+    quickSortRandom(arr, p, comparison, swaps);
+    quickSortRandom(arr + p + 1, size - p - 1, comparison, swaps);
+}
+
+void printFrequencyLong(long long value[], int runs, long long minvalue, long long maxvalue){
+    
+    const int range = 10;
+    double rangeSize = double(maxvalue - minvalue) / range;
+    
+    for(int i=0; i<range; i++){
+        
+        double lower = minvalue + i *rangeSize;
+        double upper = minvalue + (i+ 1) * rangeSize;
+        int count = 0;
+    
+        for(int j = 0; j < runs; j++){
+        
+            if(i == range - 1){
+                if(value[j] >= lower && value[j] <= upper)
+                    count++;
+        }
+        else{
+            if(value[j] >= lower && value[j] < upper)
+                count++;
+            }
+        }
+        cout << "[" << lower << ", " << upper << "]: " << count<< endl;
+    }
+}
+
+void printFrequencyDouble(double value[], int runs, double minvalue, double maxvalue){
+
+    const int range = 10;
+    double rangeSize = (maxvalue - minvalue) / range;
+
+    for(int i = 0; i<range; i++){
+
+        double lower = minvalue + i * rangeSize;
+        double upper = minvalue + (i+ 1) * rangeSize;
+        int count = 0;
+
+        for(int j = 0; j < runs; j++){
+
+            if(i == range - 1){
+                if(value[j] >= lower && value[j] <= upper)
+                    count++;
+            }
+            else{
+                if(value[j] >= lower && value[j] < upper)
+                    count++;
+            }
+        }
+        cout << "[" << lower << ", " << upper << "]: "
+             << count << endl;
+    }
+}
+
+
+void SortingArray(int ori[], int size, SortFunction sortFn, int iteration){
+    
+    double TotalTime =0;
+    long long TotalComparison = 0;
+    long long TotalSwaps = 0;
+    
+    double mintime = DBL_MAX;
+    double maxtime = 0;
+    
+    long long minComparison = LLONG_MAX;
+    long long maxComparison = 0;
+    long long minSwaps = LLONG_MAX;
+    long long maxSwaps = 0;
+    
+    double Ftime[iteration];
+    long long Fcomparison[iteration];
+    long long Fswaps[iteration];
+    
+    int* arr = new int[size];
+    
+    
+    for(int runs =0; runs < iteration; runs++){
+        
+       // int* arr = new int[size];
+        for (int i= 0; i<size; i++){
+            arr[i] = ori[i];
+        }
+        
+    long long comparison = 0;
+    long long swaps = 0;
+    
+    auto start = chrono::steady_clock::now();
+    //clock_t start = clock();
+    sortFn(arr, size, comparison, swaps);
+    //clock_t end = clock();
+    auto end = chrono::steady_clock::now();
+    
+    //double times = double(end - start) *1000 / CLOCKS_PER_SEC;
+    double times = chrono::duration<double, nano>(end - start).count();
+    
+    Ftime[runs] = times;
+    Fcomparison[runs] = comparison;
+    Fswaps[runs] = swaps;
+    
+    TotalTime += times;
+    TotalComparison += comparison;
+    TotalSwaps += swaps;
+    
+    if (times < mintime) mintime = times;
+    if (times > maxtime) maxtime = times;
+    if (comparison <minComparison) minComparison = comparison;
+    if (comparison > maxComparison) maxComparison = comparison;
+    if (swaps < minSwaps) minSwaps = swaps;
+    if (swaps > maxSwaps) maxSwaps = swaps;
+    
+    //delete[] arr;
+    }
+    delete[] arr;
+    
+    cout << "average time: " << TotalTime / iteration << "ns" << endl;
+    
+    /*
+    cout << "average comparison: " << (double)TotalComparison / iteration << endl;
+    cout << "average swaps: " << TotalSwaps / iteration << endl;
+    
+    cout << "min time: " << mintime << "ms" << endl;
+    cout << "max time: " << maxtime << "ms"<< endl;
+    cout << "min comparison: " << minComparison<< endl;
+    cout << "max comparison: " << maxComparison<< endl;
+    cout << "min swap: " << minSwaps<< endl;
+    cout << "max swap: " << maxSwaps<< endl;
+    
+    cout << "Swap frequency: " <<endl;
+    printFrequencyLong(Fswaps, iteration, minSwaps, maxSwaps);
+    cout << endl;
+    cout << "comparison frequency: " <<endl;
+    printFrequencyLong(Fcomparison, iteration,minComparison, maxComparison);
+    cout << endl;
+    cout << "CPU time frequency: " <<endl;
+    printFrequencyDouble(Ftime, iteration, mintime, maxtime);
+    */
+}
+
+
+int main(){
+    
+    int oriArray[256];
+    int size = sizeof(oriArray) / sizeof(oriArray[0]);
+    srand(721);
+    for (int i=0; i<size; i++){
+        oriArray[i] = rand() % 1000 +1;
+    }
+    
+    int sortedArray[100000];
+    for(int j = 0; j< 100000; j++){
+        sortedArray[j] = j+1;
+        
+    }
+    
+    int iterationtimes = 100;
+    cout << "insertion sort" << endl;
+    SortingArray(oriArray, size, insertionSort, iterationtimes);
+    cout << endl;
+    cout << "heap  sort" << endl;
+    SortingArray(oriArray, size, heapSort, iterationtimes);
+    cout << endl;
+    cout << "merge sort" << endl;
+    SortingArray(oriArray, size, mergeSort, iterationtimes);
+    cout << endl;
+    cout << "quick sort basic" << endl;
+    SortingArray(oriArray, size, quickSortBasic, iterationtimes);
+    cout << endl;
+    //cout << "quick sort random" << endl;
+    //SortingArray(oriArray, size, quickSortRandom, iterationtimes);
+    //cout << endl;
+    
+    
+    
+    
+
+    
+    
+return 0;
+}
