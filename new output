@@ -521,3 +521,79 @@ CPU time frequency:
 
 3.
 a.
+array size 16:
+insertion sort
+average time: 342.18ns
+
+heap  ort
+average time: 1406.15ns
+
+merge sort
+average time: 1651.31ns
+
+quick sort basic
+average time: 708.99ns
+
+
+array size 32:
+insertion sort
+average time: 1910.24ns
+
+heap  sort
+average time: 3958.75ns
+
+merge sort
+average time: 4558.35ns
+
+quick sort basic
+average time: 1671.82ns
+
+
+array size 64:
+insertion sort
+average time: 6157.75ns
+
+heap  sort
+average time: 7856.65ns
+
+merge sort
+average time: 7990.64ns
+
+quick sort basic
+average time: 4705.89ns
+
+
+array size 128:
+insertion sort
+average time: 20137.6ns
+
+heap  sort
+average time: 20186.8ns
+
+merge sort
+average time: 12140.3ns
+
+quick sort basic
+average time: 13910.8ns
+
+
+array size 256:
+insertion sort
+average time: 65166.2ns
+
+heap  sort
+average time: 32279.4ns
+
+merge sort
+average time: 16549.6ns
+
+quick sort basic
+average time: 19794.8ns
+
+d. when sorting with small arrays insertion sort is the best where it take the fastest to finish but when the array size start to increase the time for it to complete also increase like expoentialy, other sorting method did not grow at that fast of rate the best size for insertion sort is the size of 16
+when array size is 16 the best clock time is insertion sort
+when array size is 32 the best clock time is basic quick sort
+when array size is 64 the best clock time is basic quick sort
+when array size is 128 the best clock time is merge sort
+when array size is 256 the best clock time is merge sort
+the experiment above was run on my computer which is an acer nitro 5 that i7 with RTX 3050
