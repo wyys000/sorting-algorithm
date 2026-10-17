@@ -144,26 +144,55 @@ void quickSortRandom(int arr[], int size, long long& comparison, long long& swap
 }
 
 void printFrequencyLong(long long value[], int runs, long long minvalue, long long maxvalue){
+    
     const int range = 10;
     double rangeSize = double(maxvalue - minvalue) / range;
     
     for(int i=0; i<range; i++){
+        
         double lower = minvalue + i *rangeSize;
-        double upper = minvalue + (i+1) * rangeSize;
+        double upper = minvalue + (i+ 1) * rangeSize;
         int count = 0;
     
-    for(int j = 0; j < runs; j++){
+        for(int j = 0; j < runs; j++){
         
-        if(i == range -1){
-            if(value[j] >= lower && value[j] <= upper)
-                count++;
+            if(i == range - 1){
+                if(value[j] >= lower && value[j] <= upper)
+                    count++;
         }
         else{
             if(value[j] >= lower && value[j] < upper)
                 count++;
             }
         }
-        cout << "[" << lower << ", " << upper << "]: " << endl;
+        cout << "[" << lower << ", " << upper << "]: " << count<< endl;
+    }
+}
+
+void printFrequencyDouble(double value[], int runs, double minvalue, double maxvalue){
+
+    const int range = 10;
+    double rangeSize = (maxvalue - minvalue) / range;
+
+    for(int i = 0; i<range; i++){
+
+        double lower = minvalue + i * rangeSize;
+        double upper = minvalue + (i+ 1) * rangeSize;
+        int count = 0;
+
+        for(int j = 0; j < runs; j++){
+
+            if(i == range - 1){
+                if(value[j] >= lower && value[j] <= upper)
+                    count++;
+            }
+            else{
+                if(value[j] >= lower && value[j] < upper)
+                    count++;
+            }
+        }
+        cout << "[" << lower << ", " << upper << "]: "
+             << count << endl;
     }
 }
 
@@ -199,11 +228,14 @@ void SortingArray(int ori[], int size, SortFunction sortFn, int iteration){
     long long comparison = 0;
     long long swaps = 0;
     
+    //auto start = chrono::steady_clock::now();
     clock_t start = clock();
     sortFn(arr, size, comparison, swaps);
     clock_t end = clock();
+    //auto end = chrono::steady_clock::now();
     
     double times = double(end - start) *1000 / CLOCKS_PER_SEC;
+    //double times = chrono::duration<double, nano>(end - start).count();
     
     Ftime[runs] = times;
     Fcomparison[runs] = comparison;
@@ -224,16 +256,23 @@ void SortingArray(int ori[], int size, SortFunction sortFn, int iteration){
     }
     delete[] arr;
     
-    cout << "average time: " << TotalTime / iteration << "ns" << endl;
+    cout << "average time: " << TotalTime / iteration << "ms" << endl;
     cout << "average comparison: " << TotalComparison / iteration << endl;
     cout << "average swaps: " << TotalSwaps / iteration << endl;
     
-    cout << "min time: " << mintime << "ns" << endl;
-    cout << "max time: " << maxtime << "ns"<< endl;
+    cout << "min time: " << mintime << "ms" << endl;
+    cout << "max time: " << maxtime << "ms"<< endl;
     cout << "min comparison: " << minComparison<< endl;
     cout << "max comparison: " << maxComparison<< endl;
     cout << "min swap: " << minSwaps<< endl;
     cout << "max swap: " << maxSwaps<< endl;
+    
+    cout << "Swap frequency: " <<endl;
+    printFrequencyLong(Fswaps, iteration, minSwaps, maxSwaps);
+    cout << endl;
+    cout << "CPU time frequency: " <<endl;
+    printFrequencyDouble(Ftime, iteration, mintime, maxtime);
+    
 }
 
 
