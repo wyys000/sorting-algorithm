@@ -1,0 +1,199 @@
+
+#include <iostream> 
+#include <pthread.h>
+//libary for randomize
+#include <cstdlib>
+#include <ctime>
+
+using namespace std;
+
+//making a bucket to hold the thread
+typedef struct{
+    string taskid;
+    int priority;
+    int burst;
+    //for the arrive time and end time at 0
+    int start;
+    int end;
+    //for the random arrive time
+    int arrive;
+    int remainburst;
+} bucket;
+
+typedef struct{
+    string taskid;
+    int start;
+    int end;
+}pieces;
+
+//making the function title for the thread to execute 
+void *function(void *arg);
+//for ps it cant print everythjng i need to put it in pieces
+void *apart(void *arg);
+
+//passing in the current runing thread compare to the thread that will be pass in and check if which is smaller returning true or false
+bool checksjf(bucket &a, bucket &b){
+    //in other word answering should a process before b process
+    if(a.burst < b.burst) return true;
+    else return false;
+}
+
+//a sorting method for arrive time
+// in order for insertion sort to change the position of different task we need to pass in the bucket
+void insertionSort(bucket arr[], int size){
+    for(int i=1; i < size; i++){
+        int j = i-1;
+        bucket key = arr[i];
+        while(j >= 0){
+            if(arr[j].arrive > key.arrive){
+            arr[j +1] = arr[j];
+            --j;
+            }
+            else{
+                break;
+            }
+        }
+        arr[j+1] = key;
+    }
+}
+
+
+int main(){
+    //set a randomize number generator 
+    srand(time(NULL));
+    
+    
+    //here is the task i want to run, task name, priority and burst
+    
+    bucket task[5] = {
+        {"t1", 2, 13, 0, 0},
+        {"t2", 1, 7, 0, 0},
+        {"t3", 3, 15, 0, 0},
+        {"t4", 1, 18, 0, 0},
+        {"t5", 4, 8, 0, 0}
+    };
+    // create the thread i want to use
+    pthread_t threads[5];
+    
+    //track when they came in that oder when did they start and when did they end for fcfs
+    int clock = 0;
+    for(int i=0; i<5; i++){
+        task[i].start = clock;
+        clock += task[i].burst;
+        task[i].end = clock;
+    }
+    
+    //start the thread using for one by one let them executethe function
+    cout << "FCFS: " <<endl;
+    for(int i=0; i<5; i++){
+        //the &task pass the value i previoues put in
+        pthread_create(&threads[i], NULL, function, &task[i]);
+        //after finish concerently runing the thread  i need to join them back to the main code
+        pthread_join(threads[i], NULL);
+    }
+    
+    //for sjf
+    //since everything come at the same time i dont need to calculate the time where t4 might run for 3 second and t3 come in they are just ordered by the burst time with all arrive at time 0
+    //copy and paste from fcfs
+    bucket task2[5] = {
+        {"t1", 2, 13, 0, 0},
+        {"t2", 1, 7, 0, 0},
+        {"t3", 3, 15, 0, 0},
+        {"t4", 1, 18, 0, 0},
+        {"t5", 4, 8, 0, 0}
+    };
+    
+    
+    //order them in the shortest job
+    for(int i=0; i<5; i++){
+            for(int j=i+1; j<5; j++){
+                if(checksjf(task2[j], task2[i])){
+                    bucket temp = task2[i];
+                    task2[i] = task2[j];
+                    task2[j] = temp;
+                }
+            }
+    }
+    
+    //same as fcfs
+     int clock2 = 0;
+    for(int i=0; i<5; i++){
+        task2[i].start = clock2;
+        clock2 += task2[i].burst;
+        task2[i].end = clock2;
+    }
+    
+    // create the thread i want to use
+    pthread_t threads2[5];
+    
+    cout << "SJF: " << endl;
+    
+    for(int i=0; i<5; i++){
+        //the &task pass the value i previoues put in
+        pthread_create(&threads2[i], NULL, function, &task2[i]);
+        //after finish concerently finish execute that function i need to join them back to the main code
+        pthread_join(threads2[i], NULL);
+        
+    }
+    
+    
+    //for ps
+    
+    pthread_t threads3[5];
+    bucket task3[5] = {
+        {"t1", 2, 13, 0, 0},
+        {"t2", 1, 7, 0, 0},
+        {"t3", 3, 15, 0, 0},
+        {"t4", 1, 18, 0, 0},
+        {"t5", 4, 8, 0, 0}
+    };
+    //give the arrive time for each and sort them from small to big
+    int arrtime[];
+    for(int i=0; i<5; i++){
+        task3[i].arrive = rand() %100 + 1;
+        
+        cout << task3[i].taskid << ": arrive time at " << task3[i].arrive << endl;
+    }
+    //sort them in arrive time
+    insertionSort(task3, 5);
+    
+    int clock3 = task3[0].arrive;
+    for(int i=0; i<5; i++){
+        task3[i].start = clock3;
+        clock3 += task3[i].burst;
+        task3[i].end = clock3;
+    }
+    
+    // create the thread i want to use
+    pthread_t threads3[5];
+    
+    
+        cout << "ps: " << endl;
+    
+    for(int i=0; i<5; i++){
+        //the &task pass the value i previoues put in
+        pthread_create(&threads2[i], NULL, function, &task2[i]);
+        //after finish concerently finish execute that function i need to join them back to the main code
+        pthread_join(threads2[i], NULL);
+        //I couldn't figure iut how to do apart
+    }
+    
+    
+    
+    
+return 0;
+}
+
+// the empty pointer arg point to the value
+void *function(void *arg){
+        //since it a void that point to the type that i defined i need to make a thread variable to hold that pointer value
+    bucket *task = (bucket *)arg; 
+
+    //using the burst value adding it so that i can make a table
+    //int tburst = 0
+    cout << (*task).taskid <<": [" << (*task).start << " - " << (*task).end << "]" << endl;
+    
+    
+    
+    return NULL;
+}
